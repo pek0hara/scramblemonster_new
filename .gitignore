@@ -1,0 +1,56 @@
+# =========================
+# General
+# =========================
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+
+# Editor directories and files
+.atom/
+.history
+.svn/
+.swiftpm/
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VS Code settings (uncomment if不要なら有効化)
+#.vscode/
+
+# =========================
+# Flutter/Dart/Pub
+# =========================
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+**/build/
+**/doc/api/
+**/ios/Flutter/.last_build_id
+
+# =========================
+# Android/Gradle
+# =========================
+/android/app/debug
+/android/app/profile
+/android/app/release
+.gradle/
+local.properties
+
+# =========================
+# Symbolication/Obfuscation
+# =========================
+app.*.symbols
+app.*.map.json
+
+# =========================
+# その他
+# =========================
+migrate_working_dir/
+.build/
+.buildlog/
