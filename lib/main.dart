@@ -424,7 +424,20 @@ class _MyHomePageState extends State<MyHomePage> {
           width: 105,
           height: 142,
           child: combineMonsters[index] == null
-              ? Placeholder() // モンスターが選択されていない場合、プレースホルダーを表示
+              ? Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.add,
+                      color: Colors.grey,
+                      size: 32,
+                    ),
+                  ),
+                ) // モダンなプレースホルダー
               : MonsterWidget(monster: combineMonsters[index]!),
         );
       },
@@ -652,6 +665,7 @@ class MonsterWidget extends StatelessWidget {
           style: TextStyle(
             color: Colors.black,
             fontWeight: this.fontWeight,
+            fontSize: 11.0,
           ),
         ),
         Text(
@@ -659,6 +673,7 @@ class MonsterWidget extends StatelessWidget {
           style: TextStyle(
             color: this.magicColor,
             fontWeight: this.magicFontWeight,
+            fontSize: 11.0,
           ),
         ),
         Text(
@@ -666,6 +681,7 @@ class MonsterWidget extends StatelessWidget {
           style: TextStyle(
             color: this.willColor,
             fontWeight: this.willFontWeight,
+            fontSize: 11.0,
           ),
         ),
         Text(
@@ -673,6 +689,7 @@ class MonsterWidget extends StatelessWidget {
           style: TextStyle(
             color: this.intelColor,
             fontWeight: this.intelFontWeight,
+            fontSize: 11.0,
           ),
         ),
       ],
