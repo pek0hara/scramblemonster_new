@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'package:flutter/material.dart';
+
 import '../models/monster.dart';
 import '../providers/game_state_provider.dart';
 
@@ -13,12 +15,13 @@ class GameLogic {
       return false;
     }
 
-    if (gameState.combineMonsters[0] == null || gameState.combineMonsters[1] == null) {
+    if (gameState.combineMonsters[0] == null ||
+        gameState.combineMonsters[1] == null) {
       return false;
     }
 
     for (var monster in gameState.combineMonsters) {
-      if (!gameState.ownMonsters.contains(monster) && 
+      if (!gameState.ownMonsters.contains(monster) &&
           !gameState.searchedMonsters.contains(monster)) {
         return true; // monsterが存在しない場合、trueを返す
       }
@@ -51,7 +54,7 @@ class GameLogic {
 
     int score = newMonster.lv;
     gameState.addScore(score);
-    
+
     // 行動力の消費
     if (0 < gameState.actionPoints && gameState.actionPoints < 10) {
       gameState.useActionPoints(gameState.actionPoints); // 残りをすべて使用
@@ -87,7 +90,7 @@ class GameLogic {
     do {
       Monster searchedMonster = createNewMonster();
       gameState.searchedMonsters.add(searchedMonster);
-      
+
       randRetry = random.nextInt(searchStatus.magic + 1);
       successRetry += 60;
       count++;
@@ -103,7 +106,7 @@ class GameLogic {
   Monster createNewMonster() {
     HighestStatus highestStatus = gameState.getHighestStatus();
     final random = Random();
-    
+
     int max = 40 + highestStatus.lv ~/ 3;
     int newMagic = random.nextInt(max) + 1;
     int newWill = random.nextInt(max - newMagic + 1) + 1;
@@ -115,7 +118,7 @@ class GameLogic {
 
     // 精神補正
     newWill += random.nextInt(highestStatus.will ~/ 6 + 1);
-    
+
     // レベル計算
     int newLv = (newMagic + newWill + newIntel) ~/ 6;
 
@@ -126,12 +129,7 @@ class GameLogic {
     newMagic += random.nextInt(max) + 1;
 
     return Monster(
-      no: newNo, 
-      magic: newMagic, 
-      will: newWill, 
-      intel: newIntel, 
-      lv: newLv
-    );
+        no: newNo, magic: newMagic, will: newWill, intel: newIntel, lv: newLv);
   }
 
   // 成長率計算
@@ -165,9 +163,12 @@ class GameLogic {
   // 合体モンスター生成
   Monster newCombinedMonster(Monster monster1, Monster monster2) {
     // 各属性の成長率を計算する
-    int growM = calculateGrowth(monster1.magic, monster2.magic, max(monster1.lv, monster2.lv));
-    int growW = calculateGrowth(monster1.will, monster2.will, max(monster1.lv, monster2.lv));
-    int growI = calculateGrowth(monster1.intel, monster2.intel, max(monster1.lv, monster2.lv));
+    int growM = calculateGrowth(
+        monster1.magic, monster2.magic, max(monster1.lv, monster2.lv));
+    int growW = calculateGrowth(
+        monster1.will, monster2.will, max(monster1.lv, monster2.lv));
+    int growI = calculateGrowth(
+        monster1.intel, monster2.intel, max(monster1.lv, monster2.lv));
 
     // 合体後のモンスターのステータスを計算するロジック
     int newM = (monster1.magic + monster2.magic) * growM ~/ 100;

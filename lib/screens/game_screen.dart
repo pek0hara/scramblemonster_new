@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/game_state_provider.dart';
@@ -22,7 +24,7 @@ class GameScreen extends StatelessWidget {
             Text('行動力: ${gameState.actionPoints}'),
           ],
         ),
-        
+
         // 合体のUI
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -49,7 +51,8 @@ class GameScreen extends StatelessWidget {
               },
             ),
             // 合体後のモンスターを表示
-            if (gameState.combineMonsters[0] != null && gameState.combineMonsters[1] != null) ...[
+            if (gameState.combineMonsters[0] != null &&
+                gameState.combineMonsters[1] != null) ...[
               Icon(Icons.arrow_forward), // `→` アイコンを表示
               _buildNewCombinedMonsterWidget(
                 gameState.combineMonsters[0]!,
@@ -59,13 +62,14 @@ class GameScreen extends StatelessWidget {
             ],
           ],
         ),
-        
+
         // 合体ボタンとキャンセルボタン
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-              onPressed: gameState.combineMonsters[0] != null || gameState.combineMonsters[1] != null
+              onPressed: gameState.combineMonsters[0] != null ||
+                      gameState.combineMonsters[1] != null
                   ? () {
                       gameState.cancelCombine();
                     }
@@ -83,33 +87,36 @@ class GameScreen extends StatelessWidget {
                       }
                     }
                   : null,
-              child: Text('合体 (-${gameState.actionPoints < 10 ? gameState.actionPoints : 10})'),
+              child: Text(
+                  '合体 (-${gameState.actionPoints < 10 ? gameState.actionPoints : 10})'),
             ),
           ],
         ),
-        
+
         // 所持モンスター
         _buildMonsterLine(
           gameState.ownMonsters,
           gameState,
           gameLogic,
         ),
-        
+
         // 画面メッセージ
         Text(
           gameState.infoMessage,
           style: TextStyle(
-            color: gameState.infoMessage.contains('なくなりました') ? Colors.red : Colors.black,
+            color: gameState.infoMessage.contains('なくなりました')
+                ? Colors.red
+                : Colors.black,
           ),
         ),
-        
+
         // 捜索結果
         _buildMonsterLine(
           gameState.searchedMonsters,
           gameState,
           gameLogic,
         ),
-        
+
         // 捜索ボタン
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -162,9 +169,12 @@ class GameScreen extends StatelessWidget {
     GameLogic gameLogic,
   ) {
     // 各属性の成長率を計算する
-    int growM = gameLogic.calculateGrowth(monster1.magic, monster2.magic, max(monster1.lv, monster2.lv));
-    int growW = gameLogic.calculateGrowth(monster1.will, monster2.will, max(monster1.lv, monster2.lv));
-    int growI = gameLogic.calculateGrowth(monster1.intel, monster2.intel, max(monster1.lv, monster2.lv));
+    int growM = gameLogic.calculateGrowth(
+        monster1.magic, monster2.magic, max(monster1.lv, monster2.lv));
+    int growW = gameLogic.calculateGrowth(
+        monster1.will, monster2.will, max(monster1.lv, monster2.lv));
+    int growI = gameLogic.calculateGrowth(
+        monster1.intel, monster2.intel, max(monster1.lv, monster2.lv));
 
     // 合体後のモンスターを生成
     Monster combinedMonster = gameLogic.newCombinedMonster(monster1, monster2);
