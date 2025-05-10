@@ -154,9 +154,23 @@ class GameScreen extends StatelessWidget {
       children: monsters
           .map((monster) => OwnMonsterBox(
                 monster: monster,
-                onDragComplete: (_) {},
+                onTap: (tappedMonster) {
+                  if (gameState.searchedMonsters.contains(tappedMonster)) {
+                    if (gameState.ownMonsters.length < 5) {
+                      gameState.addMonsterToOwn(tappedMonster);
+                      gameState.selectMonsterForCombine(tappedMonster);
+                    }
+                  } else if (gameState.ownMonsters.contains(tappedMonster)) {
+                    gameState.selectMonsterForCombine(tappedMonster);
+                  }
+                },
                 onSwap: (draggedMonster, targetMonster) {
+                  // 通常の入れ替え処理のみ
                   gameState.swapMonsters(draggedMonster, targetMonster);
+                },
+                onDragComplete: (_) {
+                  // ドラッグ完了時の処理（必要に応じて）
+                  // この場合は何もしないでOK
                 },
               ))
           .toList(),

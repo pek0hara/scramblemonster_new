@@ -18,12 +18,13 @@ class GameStateProvider extends ChangeNotifier {
 
   Future<void> _loadData() async {
     final prefs = await SharedPreferences.getInstance();
-    
+
     // モンスターデータの読み込み
     final jsonString = prefs.getString('monsters');
     if (jsonString != null) {
       List<dynamic> jsonList = json.decode(jsonString);
-      ownMonsters = jsonList.map((jsonItem) => Monster.fromJson(jsonItem)).toList();
+      ownMonsters =
+          jsonList.map((jsonItem) => Monster.fromJson(jsonItem)).toList();
     } else {
       // 初期モンスター
       ownMonsters = [Monster(no: 0, magic: 10, will: 10, intel: 10, lv: 1)];
@@ -31,23 +32,24 @@ class GameStateProvider extends ChangeNotifier {
 
     // 行動力の読み込み
     actionPoints = prefs.getInt('action_points') ?? 1000;
-    
+
     // スコアの読み込み
     totalScore = prefs.getInt('total_score') ?? 0;
-    
+
     notifyListeners();
   }
 
   Future<void> saveData() async {
     final prefs = await SharedPreferences.getInstance();
-    
+
     // モンスターデータの保存
-    List<Map<String, dynamic>> jsonMonsters = ownMonsters.map((monster) => monster.toJson()).toList();
+    List<Map<String, dynamic>> jsonMonsters =
+        ownMonsters.map((monster) => monster.toJson()).toList();
     await prefs.setString('monsters', jsonEncode(jsonMonsters));
-    
+
     // 行動力の保存
     await prefs.setInt('action_points', actionPoints);
-    
+
     // スコアの保存
     await prefs.setInt('total_score', totalScore);
   }
@@ -60,21 +62,25 @@ class GameStateProvider extends ChangeNotifier {
   void addMonsterToOwn(Monster monster) {
     if (ownMonsters.length < 5) {
       ownMonsters.add(monster);
-      searchedMonsters.remove(monster);
+      if (searchedMonsters.contains(monster)) {
+        searchedMonsters.remove(monster);
+      }
       setInfoMessage('モンスターを仲間に加えた！');
       saveData();
     }
   }
 
   void selectMonsterForCombine(Monster monster) {
-    if (!combineMonsters.contains(monster)) {
-      if (combineMonsters[0] == null) {
-        combineMonsters[0] = monster;
-      } else if (combineMonsters[1] == null) {
-        combineMonsters[1] = monster;
-      }
-      notifyListeners();
+    if (combineMonsters[0] == null) {
+      combineMonsters[0] = monster;
+    } else if (combineMonsters[1] == monster) {
+      combineMonsters[0] = monster;
+      combineMonsters[1] = null;
+    } else {
+      combineMonsters[1] = monster;
     }
+    saveData();
+    notifyListeners();
   }
 
   void cancelCombine() {
@@ -96,7 +102,8 @@ class GameStateProvider extends ChangeNotifier {
     } else if (draggedIndexSearched != -1 && targetIndexSearched != -1) {
       // 検索モンスター同士の入れ替え
       final temp = searchedMonsters[draggedIndexSearched];
-      searchedMonsters[draggedIndexSearched] = searchedMonsters[targetIndexSearched];
+      searchedMonsters[draggedIndexSearched] =
+          searchedMonsters[targetIndexSearched];
       searchedMonsters[targetIndexSearched] = temp;
     } else if (draggedIndexMonsters != -1 && targetIndexSearched != -1) {
       // 所持→検索の入れ替え
@@ -122,13 +129,13 @@ class GameStateProvider extends ChangeNotifier {
       int maxMagicPower = ownMonsters
           .map((monster) => monster.lv)
           .reduce((a, b) => a > b ? a : b);
-      
+
       Map<String, dynamic> result = {
         'party': ownMonsters.map((monster) => monster.toJson()).toList(),
         'score': totalScore,
         'maxMagicPower': maxMagicPower,
       };
-      
+
       await _saveResult(result);
       await _saveHighScore(result);
     }
@@ -164,16 +171,14 @@ class GameStateProvider extends ChangeNotifier {
     highScores.add(jsonEncode(result));
 
     // JSONをデコードしてmaxMagicPowerでソート
-    List<Map<String, dynamic>> decodedHighScores = highScores
-        .map((e) => jsonDecode(e) as Map<String, dynamic>)
-        .toList();
-    decodedHighScores.sort((a, b) => b['maxMagicPower'].compareTo(a['maxMagicPower']));
+    List<Map<String, dynamic>> decodedHighScores =
+        highScores.map((e) => jsonDecode(e) as Map<String, dynamic>).toList();
+    decodedHighScores
+        .sort((a, b) => b['maxMagicPower'].compareTo(a['maxMagicPower']));
 
     // 上位5つのスコアだけを保存
-    List<String> topHighScores = decodedHighScores
-        .take(5)
-        .map((e) => jsonEncode(e))
-        .toList();
+    List<String> topHighScores =
+        decodedHighScores.take(5).map((e) => jsonEncode(e)).toList();
 
     prefs.setStringList('high_scores', topHighScores);
   }
@@ -187,7 +192,9 @@ class GameStateProvider extends ChangeNotifier {
   Future<List<Map<String, dynamic>>> getHighScores() async {
     final prefs = await SharedPreferences.getInstance();
     List<String>? highScores = prefs.getStringList('high_scores') ?? [];
-    return highScores.map((e) => jsonDecode(e) as Map<String, dynamic>).toList();
+    return highScores
+        .map((e) => jsonDecode(e) as Map<String, dynamic>)
+        .toList();
   }
 
   void addScore(int points) {

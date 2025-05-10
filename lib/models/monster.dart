@@ -37,6 +37,25 @@ class Monster {
   String toString() {
     return 'Monster(no: $no, magic: $magic, will: $will, intel: $intel, lv: $lv)';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Monster &&
+          runtimeType == other.runtimeType &&
+          no == other.no &&
+          magic == other.magic &&
+          will == other.will &&
+          intel == other.intel &&
+          lv == other.lv;
+
+  @override
+  int get hashCode =>
+      no.hashCode ^
+      magic.hashCode ^
+      will.hashCode ^
+      intel.hashCode ^
+      lv.hashCode;
 }
 
 class HighestStatus {
@@ -47,7 +66,7 @@ class HighestStatus {
 
   HighestStatus({required List<Monster> monsters}) {
     if (monsters.isEmpty) return;
-    
+
     lv = monsters[0].lv;
     magic = monsters[0].magic;
     will = monsters[0].will;

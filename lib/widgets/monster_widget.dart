@@ -12,6 +12,7 @@ class MonsterWidget extends StatelessWidget {
   final FontWeight magicFontWeight;
   final FontWeight willFontWeight;
   final FontWeight intelFontWeight;
+  final Function(Monster)? onTap; // Added onTap callback
 
   const MonsterWidget({
     Key? key,
@@ -25,65 +26,73 @@ class MonsterWidget extends StatelessWidget {
     this.magicFontWeight = FontWeight.normal,
     this.willFontWeight = FontWeight.normal,
     this.intelFontWeight = FontWeight.normal,
+    this.onTap, // Added onTap parameter
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Stack(
-          children: [
-            // 背景用のContainer
-            Container(
-              width: 60,
-              height: 60,
-              color: backColor,
-            ),
-            // アイコン用のImage.asset
-            Positioned.fill(
-              child: Image.asset('assets/images/${monster.no}.png',
-                  fit: BoxFit.cover),
-            ),
-            // 縁取り用のContainer
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                      color: borderColor, width: 3.0),
+    return GestureDetector(
+      // Wrapped with GestureDetector
+      onTap: onTap != null ? () => onTap!(monster) : null,
+      child: Column(
+        children: [
+          Stack(
+            children: [
+              // 背景用のContainer
+              Container(
+                width: 60,
+                height: 60,
+                color: backColor,
+              ),
+              // アイコン用のImage.asset
+              Positioned.fill(
+                child: Image.asset('assets/images/${monster.no}.png',
+                    fit: BoxFit.cover),
+              ),
+              // 縁取り用のContainer
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: borderColor, width: 3.0),
+                  ),
                 ),
               ),
+            ],
+          ),
+          Text(
+            'Lv.${monster.lv}',
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: fontWeight,
+              fontSize: 11.0,
             ),
-          ],
-        ),
-        Text(
-          'Lv.${monster.lv}',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: fontWeight,
           ),
-        ),
-        Text(
-          '魔力:${monster.magic}',
-          style: TextStyle(
-            color: magicColor,
-            fontWeight: magicFontWeight,
+          Text(
+            '魔力:${monster.magic}',
+            style: TextStyle(
+              color: magicColor,
+              fontWeight: magicFontWeight,
+              fontSize: 11.0,
+            ),
           ),
-        ),
-        Text(
-          '精神:${monster.will}',
-          style: TextStyle(
-            color: willColor,
-            fontWeight: willFontWeight,
+          Text(
+            '精神:${monster.will}',
+            style: TextStyle(
+              color: willColor,
+              fontWeight: willFontWeight,
+              fontSize: 11.0,
+            ),
           ),
-        ),
-        Text(
-          '知力:${monster.intel}',
-          style: TextStyle(
-            color: intelColor,
-            fontWeight: intelFontWeight,
+          Text(
+            '知力:${monster.intel}',
+            style: TextStyle(
+              color: intelColor,
+              fontWeight: intelFontWeight,
+              fontSize: 11.0,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -92,12 +101,14 @@ class OwnMonsterBox extends StatelessWidget {
   final Monster monster;
   final Function(Monster) onDragComplete;
   final Function(Monster, Monster) onSwap;
+  final Function(Monster)? onTap;
 
   const OwnMonsterBox({
     Key? key,
     required this.monster,
     required this.onDragComplete,
     required this.onSwap,
+    this.onTap,
   }) : super(key: key);
 
   @override
@@ -109,7 +120,10 @@ class OwnMonsterBox extends StatelessWidget {
           return Container(
             width: 60,
             height: 142,
-            child: MonsterWidget(monster: monster),
+            child: MonsterWidget(
+              monster: monster,
+              onTap: onTap, // Pass onTap to MonsterWidget
+            ),
           );
         },
         onWillAccept: (data) => true,
@@ -154,9 +168,12 @@ class ExpectMonsterWidget extends StatelessWidget {
     }
 
     // 各ステータスの成長率を計算
-    int growM = calculateGrowth(selectedMonster!.magic, monster.magic, selectedMonster!.lv);
-    int growW = calculateGrowth(selectedMonster!.will, monster.will, selectedMonster!.lv);
-    int growI = calculateGrowth(selectedMonster!.intel, monster.intel, selectedMonster!.lv);
+    int growM = calculateGrowth(
+        selectedMonster!.magic, monster.magic, selectedMonster!.lv);
+    int growW = calculateGrowth(
+        selectedMonster!.will, monster.will, selectedMonster!.lv);
+    int growI = calculateGrowth(
+        selectedMonster!.intel, monster.intel, selectedMonster!.lv);
 
     // borderColorを決定
     Color borderColor = _determineBorderColor(growM, growW, growI);
