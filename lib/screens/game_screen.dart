@@ -34,8 +34,10 @@ class GameScreen extends StatelessWidget {
               monster: gameState.combineMonsters[0],
               onAccept: (selectedMonster) {
                 if (!gameState.combineMonsters.contains(selectedMonster)) {
-                  gameState.combineMonsters[0] = selectedMonster;
-                  gameState.notifyListeners();
+                  gameState.setMonsterInCombineSlot(
+                    0,
+                    selectedMonster,
+                  );
                 }
               },
             ),
@@ -45,8 +47,10 @@ class GameScreen extends StatelessWidget {
               monster: gameState.combineMonsters[1],
               onAccept: (selectedMonster) {
                 if (!gameState.combineMonsters.contains(selectedMonster)) {
-                  gameState.combineMonsters[1] = selectedMonster;
-                  gameState.notifyListeners();
+                  gameState.setMonsterInCombineSlot(
+                    1,
+                    selectedMonster,
+                  );
                 }
               },
             ),

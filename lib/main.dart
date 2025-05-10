@@ -70,7 +70,8 @@ class _MyHomePageState extends State<MyHomePage> {
             TextButton(
               child: Text('リセット'),
               onPressed: () async {
-                final gameState = Provider.of<GameStateProvider>(context, listen: false);
+                final gameState =
+                    Provider.of<GameStateProvider>(context, listen: false);
                 await gameState.resetGame(); // ゲームをリセット
                 Navigator.of(context).pop(); // ダイアログを閉じる
               },
@@ -175,9 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      body: _screenState == ScreenState.game
-          ? GameScreen()
-          : ResultScreen(),
+      body: _screenState == ScreenState.game ? GameScreen() : ResultScreen(),
     );
   }
 }

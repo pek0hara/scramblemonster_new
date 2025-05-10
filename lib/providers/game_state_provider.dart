@@ -212,4 +212,9 @@ class GameStateProvider extends ChangeNotifier {
     saveData();
     notifyListeners();
   }
+
+  void setMonsterInCombineSlot(int index, Monster monster) {
+    combineMonsters[index] = monster;
+    notifyListeners();
+  }
 }

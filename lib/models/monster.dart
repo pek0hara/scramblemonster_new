@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class Monster {
   final int no;
   final int magic;
