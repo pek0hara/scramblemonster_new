@@ -221,8 +221,17 @@ class CombineMonsterSlot extends StatelessWidget {
         return Container(
           width: 105,
           height: 142,
+          decoration: BoxDecoration( // 枠線を追加
+            border: Border.all(color: Colors.grey), // 枠線の色と太さを指定
+          ),
           child: monster == null
-              ? Placeholder() // モンスターが選択されていない場合、プレースホルダーを表示
+              ? Center( // 中央に配置
+                  child: Icon( // アイコンを表示
+                    Icons.add,
+                    color: Colors.grey,
+                    size: 40.0,
+                  ),
+                )
               : MonsterWidget(monster: monster!),
         );
       },

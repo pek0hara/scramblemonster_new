@@ -71,13 +71,21 @@ class GameStateProvider extends ChangeNotifier {
   }
 
   void selectMonsterForCombine(Monster monster) {
-    if (combineMonsters[0] == null) {
-      combineMonsters[0] = monster;
-    } else if (combineMonsters[1] == monster) {
-      combineMonsters[0] = monster;
-      combineMonsters[1] = null;
-    } else {
-      combineMonsters[1] = monster;
+    if (combineMonsters[0] != monster) {
+      // モンスターがスロット1に既に存在する場合
+      if (combineMonsters[1] == monster) {
+        // スロット0に移動し、スロット1を空にする
+        combineMonsters[0] = monster;
+        combineMonsters[1] = null;
+      } else if (combineMonsters[0] == null) {
+        // モンスターがスロット1におらず、スロット0が空の場合
+        // スロット0に設定
+        combineMonsters[0] = monster;
+      } else {
+        // モンスターがスロット1におらず、スロット0も既に他のモンスターで埋まっている場合
+        // スロット1に設定
+        combineMonsters[1] = monster;
+      }
     }
     saveData();
     notifyListeners();
@@ -89,34 +97,28 @@ class GameStateProvider extends ChangeNotifier {
   }
 
   void swapMonsters(Monster draggedMonster, Monster targetMonster) {
-    int draggedIndexMonsters = ownMonsters.indexOf(draggedMonster);
-    int targetIndexMonsters = ownMonsters.indexOf(targetMonster);
-    int draggedIndexSearched = searchedMonsters.indexOf(draggedMonster);
-    int targetIndexSearched = searchedMonsters.indexOf(targetMonster);
+    // ドラッグ元／ドロップ先のリストを判定
+    final List<Monster> draggedList =
+        ownMonsters.contains(draggedMonster) ? ownMonsters : searchedMonsters;
+    final List<Monster> targetList =
+        ownMonsters.contains(targetMonster) ? ownMonsters : searchedMonsters;
 
-    if (draggedIndexMonsters != -1 && targetIndexMonsters != -1) {
-      // 所持モンスター同士の入れ替え
-      final temp = ownMonsters[draggedIndexMonsters];
-      ownMonsters[draggedIndexMonsters] = ownMonsters[targetIndexMonsters];
-      ownMonsters[targetIndexMonsters] = temp;
-    } else if (draggedIndexSearched != -1 && targetIndexSearched != -1) {
-      // 検索モンスター同士の入れ替え
-      final temp = searchedMonsters[draggedIndexSearched];
-      searchedMonsters[draggedIndexSearched] =
-          searchedMonsters[targetIndexSearched];
-      searchedMonsters[targetIndexSearched] = temp;
-    } else if (draggedIndexMonsters != -1 && targetIndexSearched != -1) {
-      // 所持→検索の入れ替え
-      ownMonsters[draggedIndexMonsters] = searchedMonsters[targetIndexSearched];
-      searchedMonsters[targetIndexSearched] = draggedMonster;
-    } else if (draggedIndexSearched != -1 && targetIndexMonsters != -1) {
-      // 検索→所持の入れ替え
-      searchedMonsters[draggedIndexSearched] = ownMonsters[targetIndexMonsters];
-      ownMonsters[targetIndexMonsters] = draggedMonster;
+    final draggedIndex = draggedList.indexOf(draggedMonster);
+    final targetIndex = targetList.indexOf(targetMonster);
+
+    if (draggedIndex != -1 && targetIndex != -1) {
+      // 2つのリスト要素を入れ替え
+      _swapElements(draggedList, draggedIndex, targetList, targetIndex);
+      saveData();
+      notifyListeners();
     }
+  }
 
-    saveData();
-    notifyListeners();
+  /// 汎用的に2つのリスト要素を入れ替える
+  void _swapElements<T>(List<T> listA, int idxA, List<T> listB, int idxB) {
+    final temp = listA[idxA];
+    listA[idxA] = listB[idxB];
+    listB[idxB] = temp;
   }
 
   HighestStatus getHighestStatus() {
