@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/game_state_provider.dart';
@@ -187,12 +185,9 @@ class GameScreen extends StatelessWidget {
     GameLogic gameLogic,
   ) {
     // 各属性の成長率を計算する
-    int growM = gameLogic.calculateGrowth(
-        monster1.magic, monster2.magic, max(monster1.lv, monster2.lv));
-    int growW = gameLogic.calculateGrowth(
-        monster1.will, monster2.will, max(monster1.lv, monster2.lv));
-    int growI = gameLogic.calculateGrowth(
-        monster1.intel, monster2.intel, max(monster1.lv, monster2.lv));
+    int growM = gameLogic.calculateGrowth(monster1, monster2);
+    int growW = gameLogic.calculateGrowth(monster1, monster2);
+    int growI = gameLogic.calculateGrowth(monster1, monster2);
 
     // 合体後のモンスターを生成
     Monster combinedMonster = gameLogic.newCombinedMonster(monster1, monster2);

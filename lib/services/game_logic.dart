@@ -21,15 +21,15 @@ class GameLogic {
     }
 
     for (var monster in gameState.combineMonsters) {
-      if (!gameState.ownMonsters.contains(monster) &&
+      if (monster != null && !gameState.ownMonsters.contains(monster) &&
           !gameState.searchedMonsters.contains(monster)) {
-        return true; // monsterが存在しない場合、trueを返す
+        return true; // monsterが存在しない場合、trueを返す (nullチェック追加)
       }
     }
 
     // 合体後のモンスターを生成
-    Monster newMonster = newCombinedMonster(
-        gameState.combineMonsters[0]!, gameState.combineMonsters[1]!);
+    Monster newMonster =
+        newCombinedMonster(gameState.combineMonsters[0]!, gameState.combineMonsters[1]!);
 
     int index0 = gameState.ownMonsters.indexOf(gameState.combineMonsters[0]!);
     int index1 = gameState.ownMonsters.indexOf(gameState.combineMonsters[1]!);
@@ -45,22 +45,29 @@ class GameLogic {
       gameState.ownMonsters[index0] = newMonster;
       gameState.searchedMonsters.remove(gameState.combineMonsters[1]!);
     } else {
-      gameState.ownMonsters[index0] = newMonster;
-      gameState.ownMonsters.removeAt(index1);
+      // 入れ替える場合、小さい方のindexに新しいモンスターを配置し、大きい方のindexを削除
+      if (index0 < index1) {
+        gameState.ownMonsters[index0] = newMonster;
+        gameState.ownMonsters.removeAt(index1);
+      } else {
+        gameState.ownMonsters[index1] = newMonster;
+        gameState.ownMonsters.removeAt(index0);
+      }
     }
 
-    gameState.combineMonsters = [null, null];
-    gameState.setInfoMessage('新しいモンスターが生まれた！');
+    gameState.combineMonsters = [null, null]; // gameState経由で更新
+    gameState.setInfoMessage('新しいモンスターが生まれた！'); // gameState経由で更新
 
     int score = newMonster.lv;
-    gameState.addScore(score);
+    gameState.addScore(score); // gameState経由で更新
 
-    // 行動力の消費
+    await gameState.saveData(); // gameState経由で保存
+
     if (0 < gameState.actionPoints && gameState.actionPoints < 10) {
-      gameState.useActionPoints(gameState.actionPoints); // 残りをすべて使用
+      gameState.useActionPoints(gameState.actionPoints); // gameState経由で更新
       return false;
     } else {
-      gameState.useActionPoints(10);
+      gameState.useActionPoints(10); // gameState経由で更新
       return true;
     }
   }
@@ -133,42 +140,41 @@ class GameLogic {
   }
 
   // 成長率計算
-  int calculateGrowth(int value1, int value2, int maxLv) {
+  int calculateGrowth(Monster monster1, Monster monster2) {
     int growthRate = 60;
+
+    int value1 = monster1.magic + monster1.will + monster1.intel;
+    int value2 = monster2.magic + monster2.will + monster2.intel;
     int sum = (value1 + value2) ~/ 7;
 
     if (sum % 7 == 0) {
-      if (maxLv < 40) {
+      if (max(monster1.lv, monster2.lv) < 40) {
         growthRate = 90;
-      } else if (maxLv < 100) {
+      } else if (max(monster1.lv, monster2.lv) < 100) {
         growthRate = 80;
       }
     } else if (sum % 3 == 0) {
-      if (maxLv < 40) {
+      if (max(monster1.lv, monster2.lv) < 40) {
         growthRate = 80;
       } else {
         growthRate = 70;
       }
     } else {
-      if (maxLv < 40) {
+      if (max(monster1.lv, monster2.lv) < 40) {
         growthRate = 70;
       } else {
         growthRate = 60;
       }
     }
-
     return growthRate;
   }
 
   // 合体モンスター生成
   Monster newCombinedMonster(Monster monster1, Monster monster2) {
     // 各属性の成長率を計算する
-    int growM = calculateGrowth(
-        monster1.magic, monster2.magic, max(monster1.lv, monster2.lv));
-    int growW = calculateGrowth(
-        monster1.will, monster2.will, max(monster1.lv, monster2.lv));
-    int growI = calculateGrowth(
-        monster1.intel, monster2.intel, max(monster1.lv, monster2.lv));
+    int growM = calculateGrowth(monster1, monster2);
+    int growW = calculateGrowth(monster1, monster2);
+    int growI = calculateGrowth(monster1, monster2);
 
     // 合体後のモンスターのステータスを計算するロジック
     int newM = (monster1.magic + monster2.magic) * growM ~/ 100;

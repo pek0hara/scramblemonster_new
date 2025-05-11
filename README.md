@@ -1,16 +1,38 @@
-# scramblemonster
+# scramblemonster 実装仕様
 
-A new Flutter project.
+## ゲーム概要
 
-## Getting Started
+- モンスターの発見と合体を繰り返して、より強いモンスターを作るゲーム。
+- 魔力が高いモンスターを持っていると、より多くのモンスターを発見できる。
+- 精神が高いモンスターを持っていると、精神が高いモンスターを発見できる。
+- 知力が高いモンスターを持っていると、Lv.が高いモンスターを発見できる。
+- Lvはモンスターの総合的な強さを表す。
 
-This project is a starting point for a Flutter application.
+## モンスター
 
-A few resources to get you started if this is your first Flutter project:
+- モンスターは `no`, `magic`, `will`, `intel`, `lv` の属性を持つ。
+- モンスターはJSONで保存・復元される。
+- モンスター画像は `images` 配下の番号付きPNGファイルを利用。
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## ゲーム進行
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- プレイヤーは最大5体までモンスターを所持できる。
+- モンスターを2体選択して合体できる。
+    - 合体時、各ステータスごとに成長率を計算し、新しいモンスターを生成。
+    - 成長率は親モンスターの値やLvに応じて決定される。
+    - 合体後のモンスターのLvやnoも合計値から算出される（最大noは177）。
+- モンスターの発見は、所持モンスターの中で最も高い魔力・精神・知力・Lvに依存。
+- モンスターの発見や合体には「行動力（actionPoints）」を消費する。
+    - 行動力は初期値1000、0になると行動できない。
+    - 行動力は保存・復元される。
+
+## UI・操作
+
+- モンスターのドラッグ＆ドロップによる入れ替えや合体スロットへのセットが可能。
+- 合体後のモンスターの成長率に応じて、枠線や文字色が変化する。
+- ゲームのリセットや説明表示、リザルト画面への遷移が可能。
+
+## データ保存
+
+- 所持モンスター、行動力、スコアは `SharedPreferences` で端末に保存。
+- 合体やゲーム終了時にリザルト・ハイスコアも保存（最大100件）。
