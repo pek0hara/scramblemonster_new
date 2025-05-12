@@ -160,11 +160,9 @@ class GameScreen extends StatelessWidget {
                   if (gameState.searchedMonsters.contains(tappedMonster)) {
                     if (gameState.ownMonsters.length < 5) {
                       gameState.addMonsterToOwn(tappedMonster);
-                      gameState.selectMonsterForCombine(tappedMonster);
                     }
-                  } else if (gameState.ownMonsters.contains(tappedMonster)) {
-                    gameState.selectMonsterForCombine(tappedMonster);
                   }
+                  gameState.selectMonsterForCombine(tappedMonster);
                 },
                 onSwap: (draggedMonster, targetMonster) {
                   // 通常の入れ替え処理のみ
