@@ -21,15 +21,16 @@ class GameLogic {
     }
 
     for (var monster in gameState.combineMonsters) {
-      if (monster != null && !gameState.ownMonsters.contains(monster) &&
+      if (monster != null &&
+          !gameState.ownMonsters.contains(monster) &&
           !gameState.searchedMonsters.contains(monster)) {
         return true; // monsterが存在しない場合、trueを返す (nullチェック追加)
       }
     }
 
     // 合体後のモンスターを生成
-    Monster newMonster =
-        newCombinedMonster(gameState.combineMonsters[0]!, gameState.combineMonsters[1]!);
+    Monster newMonster = newCombinedMonster(
+        gameState.combineMonsters[0]!, gameState.combineMonsters[1]!);
 
     int index0 = gameState.ownMonsters.indexOf(gameState.combineMonsters[0]!);
     int index1 = gameState.ownMonsters.indexOf(gameState.combineMonsters[1]!);
@@ -218,5 +219,12 @@ class GameLogic {
       'color': color,
       'fontWeight': fontWeight,
     };
+  }
+
+  // ボーダーカラー決定
+  Color determineBorderColor(int growthRate) {
+    if (growthRate >= 72) return Colors.redAccent;
+    if (growthRate >= 65) return Colors.orangeAccent;
+    return Colors.black;
   }
 }

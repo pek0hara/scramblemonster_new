@@ -156,6 +156,10 @@ class GameScreen extends StatelessWidget {
       children: monsters
           .map((monster) => OwnMonsterBox(
                 monster: monster,
+                borderColor: gameState.combineMonsters[0] != null
+                    ? gameLogic.determineBorderColor(gameLogic.calculateGrowth(
+                        gameState.combineMonsters[0]!, monster))
+                    : Colors.black,
                 onTap: (tappedMonster) {
                   if (gameState.searchedMonsters.contains(tappedMonster)) {
                     if (gameState.ownMonsters.length < 5) {
