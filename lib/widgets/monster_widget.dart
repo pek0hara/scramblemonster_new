@@ -3,7 +3,6 @@ import '../models/monster.dart';
 
 class MonsterWidget extends StatelessWidget {
   final Monster monster;
-  final int calculateGrowth;
   final Color magicColor;
   final Color willColor;
   final Color intelColor;
@@ -18,7 +17,6 @@ class MonsterWidget extends StatelessWidget {
   const MonsterWidget({
     Key? key,
     required this.monster,
-    this.calculateGrowth = -1,
     this.magicColor = Colors.black,
     this.willColor = Colors.black,
     this.intelColor = Colors.black,
