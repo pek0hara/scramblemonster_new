@@ -4,6 +4,7 @@ import '../providers/game_state_provider.dart';
 import '../services/game_logic.dart';
 import '../widgets/monster_widget.dart';
 import '../models/monster.dart';
+import '../screens/battle_screen.dart';
 
 class GameScreen extends StatelessWidget {
   @override
@@ -119,10 +120,26 @@ class GameScreen extends StatelessWidget {
           gameLogic,
         ),
 
-        // 捜索ボタン
+        // 捜索および戦闘ボタン
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            // 戦闘ボタン
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BattleScreen(
+                      opponentMonsters: [], // モック: 空リストの場合 ownMonsters が使用されます
+                      ownMonsters: gameState.ownMonsters,
+                    ),
+                  ),
+                );
+              },
+              child: Text('戦闘'),
+            ),
+            // 捜索ボタン
             ElevatedButton(
               onPressed: gameState.actionPoints > 0
                   ? () async {
