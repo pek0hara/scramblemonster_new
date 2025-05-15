@@ -8,7 +8,7 @@ class GameStateProvider extends ChangeNotifier {
   List<Monster?> combineMonsters = [null, null];
   List<Monster> searchedMonsters = [];
   String infoMessage = '';
-  int maxMagicPower = 0;
+  int maxHpPower = 0;
   int actionPoints = 1000;
   int totalScore = 0;
 
@@ -27,7 +27,7 @@ class GameStateProvider extends ChangeNotifier {
           jsonList.map((jsonItem) => Monster.fromJson(jsonItem)).toList();
     } else {
       // 初期モンスター
-      ownMonsters = [Monster(no: 0, magic: 10, will: 10, intel: 10, lv: 1)];
+      ownMonsters = [Monster(no: 0, hp: 10, atk: 10, spd: 10, lv: 1)];
     }
 
     // 行動力の読み込み
@@ -128,14 +128,14 @@ class GameStateProvider extends ChangeNotifier {
   Future<bool> resetGame() async {
     // 現在のスコアを保存
     if (totalScore != 0) {
-      int maxMagicPower = ownMonsters
+      int maxHpPower = ownMonsters
           .map((monster) => monster.lv)
           .reduce((a, b) => a > b ? a : b);
 
       Map<String, dynamic> result = {
         'party': ownMonsters.map((monster) => monster.toJson()).toList(),
         'score': totalScore,
-        'maxMagicPower': maxMagicPower,
+        'maxHpPower': maxHpPower,
       };
 
       await _saveResult(result);
@@ -145,7 +145,7 @@ class GameStateProvider extends ChangeNotifier {
     // ゲーム状態のリセット
     totalScore = 0;
     actionPoints = 1000;
-    ownMonsters = [Monster(no: 0, magic: 10, will: 10, intel: 10, lv: 1)];
+    ownMonsters = [Monster(no: 0, hp: 10, atk: 10, spd: 10, lv: 1)];
     combineMonsters = [null, null];
     searchedMonsters = [];
     infoMessage = '';
@@ -172,11 +172,11 @@ class GameStateProvider extends ChangeNotifier {
     // 新しいスコアを追加
     highScores.add(jsonEncode(result));
 
-    // JSONをデコードしてmaxMagicPowerでソート
+    // JSONをデコードしてmaxHpPowerでソート
     List<Map<String, dynamic>> decodedHighScores =
         highScores.map((e) => jsonDecode(e) as Map<String, dynamic>).toList();
     decodedHighScores
-        .sort((a, b) => b['maxMagicPower'].compareTo(a['maxMagicPower']));
+        .sort((a, b) => b['maxHpPower'].compareTo(a['maxHpPower']));
 
     // 上位5つのスコアだけを保存
     List<String> topHighScores =
