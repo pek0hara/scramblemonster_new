@@ -56,19 +56,19 @@ class GameLogic {
       }
     }
 
-    gameState.combineMonsters = [null, null]; // gameState経由で更新
-    gameState.setInfoMessage('新しいモンスターが生まれた！'); // gameState経由で更新
+    gameState.combineMonsters = [null, null];
+    gameState.setInfoMessage('新しいモンスターが生まれた！');
 
     int score = newMonster.lv;
-    gameState.addScore(score); // gameState経由で更新
+    gameState.addScore(score);
 
-    await gameState.saveData(); // gameState経由で保存
+    await gameState.saveData();
 
     if (0 < gameState.actionPoints && gameState.actionPoints < 10) {
-      gameState.useActionPoints(gameState.actionPoints); // gameState経由で更新
+      gameState.useActionPoints(gameState.actionPoints);
       return false;
     } else {
-      gameState.useActionPoints(10); // gameState経由で更新
+      gameState.useActionPoints(10);
       return true;
     }
   }

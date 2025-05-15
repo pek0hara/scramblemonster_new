@@ -1,4 +1,3 @@
-import 'dart:math';
 import '../models/monster.dart';
 
 /// バトルロジック
@@ -8,16 +7,48 @@ class BattleLogic {
 
   BattleLogic({required this.opponent, required this.own});
 
-  /// バトルシミュレーション
+  /// ターン制バトルシミュレーション
   BattleResult simulateBattle() {
-    int opponentScore = _calculateTeamPower(opponent);
-    int ownScore = _calculateTeamPower(own);
+    // モンスターを戦闘用クラスに変換
+    var enemies =
+        opponent.map((m) => _BattleMonster.from(m, 'opponent')).toList();
+    var allies = own.map((m) => _BattleMonster.from(m, 'own')).toList();
+    List<String> log = [];
 
-    bool win = ownScore >= opponentScore;
+    // 生存しているほうに攻撃を繰り返す
+    while (enemies.any((m) => m.isAlive) && allies.any((m) => m.isAlive)) {
+      // 行動順：素早さ降順
+      var turnOrder = [...enemies, ...allies].where((m) => m.isAlive).toList()
+        ..sort((a, b) => b.speed.compareTo(a.speed));
+
+      for (var actor in turnOrder) {
+        if (!actor.isAlive) continue;
+        var targets = (actor.team == 'own' ? enemies : allies)
+            .where((m) => m.isAlive)
+            .toList();
+        if (targets.isEmpty) break;
+
+        var target = targets.first;
+        target.hp -= actor.attack;
+        if (target.hp <= 0) {
+          target.hp = 0;
+          log.add('${actor.name} attacks ${target.name} and defeats it');
+        } else {
+          log.add(
+              '${actor.name} attacks ${target.name}, remaining HP: ${target.hp}');
+        }
+      }
+    }
+
+    bool win = enemies.every((m) => !m.isAlive);
+    int opponentAlive = enemies.where((m) => m.isAlive).length;
+    int ownAlive = allies.where((m) => m.isAlive).length;
+
     return BattleResult(
       win: win,
-      opponentScore: opponentScore,
-      ownScore: ownScore,
+      opponentScore: opponentAlive,
+      ownScore: ownAlive,
+      log: log,
     );
   }
 
@@ -31,12 +62,34 @@ class BattleLogic {
   }
 }
 
+/// 戦闘用モンスター
+class _BattleMonster {
+  final String name;
+  int hp; // magic → HP
+  final int attack; // will  → 攻撃力
+  final int speed; // intel → 素早さ
+  final String team; // 'own' or 'opponent'
+
+  bool get isAlive => hp > 0;
+
+  _BattleMonster.from(Monster m, this.team)
+      : name = 'Monster ${m.no}',
+        hp = m.magic,
+        attack = m.will,
+        speed = m.intel;
+}
+
 /// バトル結果
 class BattleResult {
   final bool win;
   final int opponentScore;
   final int ownScore;
+  final List<String> log; // 戦闘ログ
 
-  BattleResult(
-      {required this.win, required this.opponentScore, required this.ownScore});
+  BattleResult({
+    required this.win,
+    required this.opponentScore,
+    required this.ownScore,
+    this.log = const [],
+  });
 }
