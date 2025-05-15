@@ -22,9 +22,9 @@ class ResultHelper {
     // 新しいスコアを追加
     highScores.add(jsonEncode(result));
 
-    // JSONをデコードしてmaxMagicPowerでソート
+    // JSONをデコードしてmaxHpPowerでソート
     List<Map<String, dynamic>> decodedHighScores = highScores.map((e) => jsonDecode(e) as Map<String, dynamic>).toList();
-    decodedHighScores.sort((a, b) => b['maxMagicPower'].compareTo(a['maxMagicPower']));
+    decodedHighScores.sort((a, b) => b['maxHpPower'].compareTo(a['maxHpPower']));
 
     // 上位5つのスコアだけを保存
     List<String> topHighScores = decodedHighScores.take(5).map((e) => jsonEncode(e)).toList();

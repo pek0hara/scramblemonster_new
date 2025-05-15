@@ -195,9 +195,9 @@ class GameScreen extends StatelessWidget {
     Monster combinedMonster = gameLogic.newCombinedMonster(monster1, monster2);
 
     // 各属性のスタイルを決定する
-    Map<String, dynamic> magicStyle = gameLogic.determineStyle(growM);
-    Map<String, dynamic> willStyle = gameLogic.determineStyle(growW);
-    Map<String, dynamic> intelStyle = gameLogic.determineStyle(growI);
+    Map<String, dynamic> hpStyle = gameLogic.determineStyle(growM);
+    Map<String, dynamic> atkStyle = gameLogic.determineStyle(growW);
+    Map<String, dynamic> spdStyle = gameLogic.determineStyle(growI);
 
     // MonsterWidgetを生成する
     return Container(
@@ -205,15 +205,15 @@ class GameScreen extends StatelessWidget {
       height: 142,
       child: MonsterWidget(
         monster: combinedMonster,
-        magicColor: magicStyle['color'],
-        willColor: willStyle['color'],
-        intelColor: intelStyle['color'],
+        hpColor: hpStyle['color'],
+        atkColor: atkStyle['color'],
+        spdColor: spdStyle['color'],
         backColor: Colors.black, // 背景色は黒に固定
         borderColor: Colors.black, // 枠線色は黒に固定
         fontWeight: FontWeight.normal, // デフォルトのフォントウェイト
-        magicFontWeight: magicStyle['fontWeight'],
-        willFontWeight: willStyle['fontWeight'],
-        intelFontWeight: intelStyle['fontWeight'],
+        hpFontWeight: hpStyle['fontWeight'],
+        atkFontWeight: atkStyle['fontWeight'],
+        spdFontWeight: spdStyle['fontWeight'],
       ),
     );
   }
