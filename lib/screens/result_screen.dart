@@ -32,7 +32,7 @@ class ResultScreen extends StatelessWidget {
                             .toList(),
                       ),
                       subtitle: Text(
-                          '最高Lv. ${snapshot.data![index]['maxMagicPower']} '
+                          '最高Lv. ${snapshot.data![index]['maxHpPower']} '
                           'スコア: ${snapshot.data![index]['score']} '),
                     );
                   },

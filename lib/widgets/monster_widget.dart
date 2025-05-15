@@ -3,29 +3,29 @@ import '../models/monster.dart';
 
 class MonsterWidget extends StatelessWidget {
   final Monster monster;
-  final Color magicColor;
-  final Color willColor;
-  final Color intelColor;
+  final Color hpColor;
+  final Color atkColor;
+  final Color spdColor;
   final Color backColor;
   final Color borderColor;
   final FontWeight fontWeight;
-  final FontWeight magicFontWeight;
-  final FontWeight willFontWeight;
-  final FontWeight intelFontWeight;
+  final FontWeight hpFontWeight;
+  final FontWeight atkFontWeight;
+  final FontWeight spdFontWeight;
   final Function(Monster)? onTap;
 
   const MonsterWidget({
     Key? key,
     required this.monster,
-    this.magicColor = Colors.black,
-    this.willColor = Colors.black,
-    this.intelColor = Colors.black,
+    this.hpColor = Colors.black,
+    this.atkColor = Colors.black,
+    this.spdColor = Colors.black,
     this.backColor = Colors.black,
     this.borderColor = Colors.black,
     this.fontWeight = FontWeight.normal,
-    this.magicFontWeight = FontWeight.normal,
-    this.willFontWeight = FontWeight.normal,
-    this.intelFontWeight = FontWeight.normal,
+    this.hpFontWeight = FontWeight.normal,
+    this.atkFontWeight = FontWeight.normal,
+    this.spdFontWeight = FontWeight.normal,
     this.onTap,
   }) : super(key: key);
 
@@ -72,26 +72,26 @@ class MonsterWidget extends StatelessWidget {
             ),
           ),
           Text(
-            '魔力:${monster.magic}',
+            '耐久:${monster.hp}',
             style: TextStyle(
-              color: magicColor,
-              fontWeight: magicFontWeight,
+              color: hpColor,
+              fontWeight: hpFontWeight,
               fontSize: 11.0,
             ),
           ),
           Text(
-            '精神:${monster.will}',
+            '攻撃:${monster.atk}',
             style: TextStyle(
-              color: willColor,
-              fontWeight: willFontWeight,
+              color: atkColor,
+              fontWeight: atkFontWeight,
               fontSize: 11.0,
             ),
           ),
           Text(
-            '知力:${monster.intel}',
+            '探速:${monster.spd}',
             style: TextStyle(
-              color: intelColor,
-              fontWeight: intelFontWeight,
+              color: spdColor,
+              fontWeight: spdFontWeight,
               fontSize: 11.0,
             ),
           ),

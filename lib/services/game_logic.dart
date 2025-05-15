@@ -99,7 +99,7 @@ class GameLogic {
       Monster searchedMonster = createNewMonster();
       gameState.searchedMonsters.add(searchedMonster);
 
-      randRetry = random.nextInt(searchStatus.magic + 1);
+      randRetry = random.nextInt(searchStatus.hp + 1);
       successRetry += 60;
       count++;
     } while (randRetry > successRetry && count < 5);
@@ -116,36 +116,36 @@ class GameLogic {
     final random = Random();
 
     int max = 40 + highestStatus.lv ~/ 3;
-    int newMagic = random.nextInt(max) + 1;
-    int newWill = random.nextInt(max - newMagic + 1) + 1;
-    int newIntel = random.nextInt(max - newMagic - newWill + 2) + 1;
+    int newHp = random.nextInt(max) + 1;
+    int newAtk = random.nextInt(max - newHp + 1) + 1;
+    int newSpd = random.nextInt(max - newHp - newAtk + 2) + 1;
 
-    // 魔力補正
-    int searchMagic = highestStatus.magic > 400 ? 400 : highestStatus.magic;
-    int newNo = random.nextInt(searchMagic ~/ 4 + 1);
+    // 耐久補正
+    int searchHp = highestStatus.hp > 400 ? 400 : highestStatus.hp;
+    int newNo = random.nextInt(searchHp ~/ 4 + 1);
 
-    // 精神補正
-    newWill += random.nextInt(highestStatus.will ~/ 6 + 1);
+    // 攻撃補正
+    newAtk += random.nextInt(highestStatus.atk ~/ 6 + 1);
 
     // レベル計算
-    int newLv = (newMagic + newWill + newIntel) ~/ 6;
+    int newLv = (newHp + newAtk + newSpd) ~/ 6;
 
-    // 知力補正
-    max = highestStatus.intel ~/ 10 + 1;
-    newIntel += random.nextInt(max) + 1;
-    newWill += random.nextInt(max) + 1;
-    newMagic += random.nextInt(max) + 1;
+    // 探速補正
+    max = highestStatus.spd ~/ 10 + 1;
+    newSpd += random.nextInt(max) + 1;
+    newAtk += random.nextInt(max) + 1;
+    newHp += random.nextInt(max) + 1;
 
     return Monster(
-        no: newNo, magic: newMagic, will: newWill, intel: newIntel, lv: newLv);
+        no: newNo, hp: newHp, atk: newAtk, spd: newSpd, lv: newLv);
   }
 
   // 成長率計算
   int calculateGrowth(Monster monster1, Monster monster2) {
     int growthRate = 60;
 
-    int value1 = monster1.magic + monster1.will + monster1.intel;
-    int value2 = monster2.magic + monster2.will + monster2.intel;
+    int value1 = monster1.hp + monster1.atk + monster1.spd;
+    int value2 = monster2.hp + monster2.atk + monster2.spd;
     int sum = (value1 + value2) ~/ 7;
 
     if (sum % 7 == 0) {
@@ -178,9 +178,9 @@ class GameLogic {
     int growI = calculateGrowth(monster1, monster2);
 
     // 合体後のモンスターのステータスを計算するロジック
-    int newM = (monster1.magic + monster2.magic) * growM ~/ 100;
-    int newW = (monster1.will + monster2.will) * growW ~/ 100;
-    int newI = (monster1.intel + monster2.intel) * growI ~/ 100;
+    int newM = (monster1.hp + monster2.hp) * growM ~/ 100;
+    int newW = (monster1.atk + monster2.atk) * growW ~/ 100;
+    int newI = (monster1.spd + monster2.spd) * growI ~/ 100;
 
     // レベルとモンスター番号を計算するロジック
     int total = newM + newW + newI;
@@ -196,7 +196,7 @@ class GameLogic {
     // モンスター番号が特定の範囲を超えないように制限する
     newNo = newNo > 177 ? 177 : newNo;
 
-    return Monster(no: newNo, magic: newM, will: newW, intel: newI, lv: newLv);
+    return Monster(no: newNo, hp: newM, atk: newW, spd: newI, lv: newLv);
   }
 
   // スタイル決定
