@@ -56,7 +56,10 @@ class BattleLogic {
     // チームパワーは各モンスターのレベルとステータス合計の組み合わせ
     int power = 0;
     for (var m in team) {
-      power += m.lv * (m.magic + m.will + m.intel);
+      power += m.lv;
+      power += m.hp;
+      power += m.atk;
+      power += m.spd;
     }
     return power;
   }
@@ -65,18 +68,18 @@ class BattleLogic {
 /// 戦闘用モンスター
 class _BattleMonster {
   final String name;
-  int hp; // magic → HP
-  final int attack; // will  → 攻撃力
-  final int speed; // intel → 素早さ
-  final String team; // 'own' or 'opponent'
+  int hp;
+  final int attack;
+  final int speed;
+  final String team;
 
   bool get isAlive => hp > 0;
 
   _BattleMonster.from(Monster m, this.team)
       : name = 'Monster ${m.no}',
-        hp = m.magic,
-        attack = m.will,
-        speed = m.intel;
+        hp = m.hp,
+        attack = m.atk,
+        speed = m.spd;
 }
 
 /// バトル結果
